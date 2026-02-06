@@ -1,0 +1,4 @@
+../Core/Src/data.c:11:6:set_lux	16	static
+../Core/Src/data.c:14:6:set_mois	16	static
+../Core/Src/data.c:18:10:get_lux	4	static
+../Core/Src/data.c:22:10:get_mois	4	static

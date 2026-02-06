@@ -67,7 +67,7 @@ extern uint16_t Connection_Handle;
 
 /* Private variables ---------------------------------------------------------*/
 uint16_t SizeMycharwrite = 1;
-uint16_t SizeMycharnotify = 1;
+uint16_t SizeMycharnotify = 4;
 uint16_t SizeMybutton = 1;
 
 /**

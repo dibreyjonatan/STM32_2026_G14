@@ -15,6 +15,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_ll_dma.h \
  ../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_ll_dmamux.h \
  ../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_hal_dma_ex.h \
+ ../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_hal_adc.h \
+ ../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_ll_adc.h \
+ ../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_hal_adc_ex.h \
  ../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_hal_cortex.h \
  ../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_hal_exti.h \
  ../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_hal_flash.h \
@@ -54,9 +57,10 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_ll_gpio.h \
  ../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_ll_rtc.h \
  ../Middlewares/ST/STM32_WPAN/ble/core/ble_bufsize.h \
- ../Core/Inc/app_entry.h ../Core/Inc/app_common.h ../Core/Inc/ipcc.h \
- ../Core/Inc/main.h ../Core/Inc/memorymap.h ../Core/Inc/rf.h \
- ../Core/Inc/rtc.h ../Core/Inc/gpio.h
+ ../Core/Inc/app_entry.h ../Core/Inc/app_common.h ../Core/Inc/adc.h \
+ ../Core/Inc/main.h ../Core/Inc/dma.h ../Core/Inc/ipcc.h \
+ ../Core/Inc/memorymap.h ../Core/Inc/rf.h ../Core/Inc/rtc.h \
+ ../Core/Inc/gpio.h ../Core/Inc/data.h
 ../Core/Inc/main.h:
 ../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_hal.h:
 ../Core/Inc/stm32wbxx_hal_conf.h:
@@ -74,6 +78,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_ll_dma.h:
 ../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_ll_dmamux.h:
 ../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_hal_dma_ex.h:
+../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_hal_adc.h:
+../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_ll_adc.h:
+../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_hal_adc_ex.h:
 ../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_hal_cortex.h:
 ../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_hal_exti.h:
 ../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_hal_flash.h:
@@ -117,9 +124,12 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Middlewares/ST/STM32_WPAN/ble/core/ble_bufsize.h:
 ../Core/Inc/app_entry.h:
 ../Core/Inc/app_common.h:
-../Core/Inc/ipcc.h:
+../Core/Inc/adc.h:
 ../Core/Inc/main.h:
+../Core/Inc/dma.h:
+../Core/Inc/ipcc.h:
 ../Core/Inc/memorymap.h:
 ../Core/Inc/rf.h:
 ../Core/Inc/rtc.h:
 ../Core/Inc/gpio.h:
+../Core/Inc/data.h:

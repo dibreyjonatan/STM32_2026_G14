@@ -29,7 +29,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "data.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -74,6 +74,8 @@ uint8_t UpdateCharData[512];
 uint8_t NotifyCharData[512];
 uint16_t Connection_Handle;
 /* USER CODE BEGIN PV */
+char state=0 ;
+static uint8_t TimerID;
 
 /* USER CODE END PV */
 
@@ -85,20 +87,25 @@ static void Custom_Mybutton_Update_Char(void);
 static void Custom_Mybutton_Send_Notification(void);
 
 /* USER CODE BEGIN PFP */
+static void myTimerCallback(void)
+{
+    // Lance la tâche myTask
+    UTIL_SEQ_SetTask(1 << CFG_TASK_MY_TASK, CFG_SCH_PRIO_0);
+}
+
 void myTask(void){
 
-	if(!HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin)){
-		UpdateCharData[0]^=0x1 ;
-		Custom_Mycharnotify_Update_Char();
-	}
 
 
-	if(!HAL_GPIO_ReadPin(B2_GPIO_Port, B2_Pin)){
-		UpdateCharData[1]^=0x1 ;
-		Custom_Mybutton_Update_Char();
-	}
+	    uint16_t a=get_lux() ;
+	    uint16_t b=get_mois();
 
-	UTIL_SEQ_SetTask(1<< CFG_TASK_MY_TASK, CFG_SCH_PRIO_0);
+	       UpdateCharData[0] = a >>8; //MSB
+	       UpdateCharData[1] = a &0xFF ; //LSB
+	       UpdateCharData[2] = b >> 8; //MSB
+	       UpdateCharData[3] = b & 0xFF; //LSB
+	       Custom_Mycharnotify_Update_Char();
+
 }
 /* USER CODE END PFP */
 
@@ -203,6 +210,11 @@ void Custom_APP_Notification(Custom_App_ConnHandle_Not_evt_t *pNotification)
 void Custom_APP_Init(void)
 {
   /* USER CODE BEGIN CUSTOM_APP_Init */
+	  UTIL_SEQ_RegTask(1 << CFG_TASK_MY_TASK, UTIL_SEQ_RFU, myTask);
+	  HW_TS_Create(CFG_TIM_PROC_ID_ISR, &TimerID, hw_ts_Repeated, myTimerCallback);
+
+	  // Démarre le timer (500ms = 500 * 1000 / 32768 ticks)
+	  HW_TS_Start(TimerID, 16384); // 500ms en ticks (32768 ticks = 1 seconde)
 
   /* USER CODE END CUSTOM_APP_Init */
   return;

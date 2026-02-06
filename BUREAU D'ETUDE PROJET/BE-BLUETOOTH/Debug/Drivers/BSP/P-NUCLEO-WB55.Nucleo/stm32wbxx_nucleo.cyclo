@@ -8,3 +8,7 @@
 ../Drivers/BSP/P-NUCLEO-WB55.Nucleo/stm32wbxx_nucleo.c:306:6:BSP_PB_Init	6
 ../Drivers/BSP/P-NUCLEO-WB55.Nucleo/stm32wbxx_nucleo.c:350:6:BSP_PB_DeInit	1
 ../Drivers/BSP/P-NUCLEO-WB55.Nucleo/stm32wbxx_nucleo.c:368:10:BSP_PB_GetState	1
+../Drivers/BSP/P-NUCLEO-WB55.Nucleo/stm32wbxx_nucleo.c:388:9:BSP_JOY_Init	2
+../Drivers/BSP/P-NUCLEO-WB55.Nucleo/stm32wbxx_nucleo.c:418:18:BSP_JOY_GetState	12
+../Drivers/BSP/P-NUCLEO-WB55.Nucleo/stm32wbxx_nucleo.c:823:13:ADCx_MspInit	1
+../Drivers/BSP/P-NUCLEO-WB55.Nucleo/stm32wbxx_nucleo.c:853:26:ADCx_Init	4

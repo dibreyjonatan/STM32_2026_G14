@@ -18,6 +18,8 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "adc.h"
+#include "dma.h"
 #include "ipcc.h"
 #include "memorymap.h"
 #include "rf.h"
@@ -26,7 +28,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
+#include <string.h>
+#include "data.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,7 +51,9 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+uint16_t lux=0 ;
+uint16_t moisture=0;
+uint16_t raw_data[2];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -59,7 +65,12 @@ void PeriphCommonClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+volatile uint8_t convCompleted=0 ;
 
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
+{
+  convCompleted = 1 ;
+}
 /* USER CODE END 0 */
 
 /**
@@ -99,7 +110,9 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_RTC_Init();
+  MX_ADC1_Init();
   MX_RF_Init();
   /* USER CODE BEGIN 2 */
 
@@ -110,6 +123,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t *) raw_data, 2);
   while (1)
   {
 
@@ -117,6 +131,20 @@ int main(void)
     MX_APPE_Process();
 
     /* USER CODE BEGIN 3 */
+
+    if (convCompleted) {
+
+        moisture = raw_data[0];
+        lux      = raw_data[1];
+
+
+        set_lux(lux ) ;
+        set_mois(moisture) ;
+        //HAL_Delay(100);
+        convCompleted = 0;
+
+    }
+
   }
   /* USER CODE END 3 */
 }
@@ -129,6 +157,14 @@ void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+
+  /** Macro to configure the PLL multiplication factor
+  */
+  __HAL_RCC_PLL_PLLM_CONFIG(RCC_PLLM_DIV2);
+
+  /** Macro to configure the PLL clock source
+  */
+  __HAL_RCC_PLL_PLLSOURCE_CONFIG(RCC_PLLSOURCE_MSI);
 
   /** Configure LSE Drive Capability
   */
