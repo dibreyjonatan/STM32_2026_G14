@@ -1,0 +1,41 @@
+@startuml
+
+state "<b>system</b>" as system 
+[*] --> system 
+state system{
+ state Init_periph : Configuration des peripheriques 
+ state Mesures : Lectures des données mesurer \n par les capteurs sur le DMA
+ state Affichage : Affichage des données capteurs sur le LCD 
+ state Transfer : On envoie les mesures à la stack bluetooth \n via un methode de parallelisme
+  
+ [*] --> Init_periph 
+ Init_periph --> Mesures  
+ Mesures --> Transfer 
+ Transfer --> decision_Arrosage 
+ state "<b>decision_Arrosage</b>" as decision_Arrosage {
+ [*] --> Comparaison 
+ Comparaison --> Arrosage_fort : 0 < Valeur < 50
+ Comparaison --> Arrosage_moyen : 50 < Valeur < 1000 
+ Comparaison --> stop_arrosage : Valeur > 1000 
+
+ Arrosage_fort --> [*]
+ Arrosage_moyen --> [*]
+ stop_arrosage --> [*] 
+ }
+ 
+ decision_Arrosage --> Affichage 
+ Affichage --> Mesures 
+
+ ||
+ state Reception : Reception des données de capteur transmis 
+ state Transmission : Transmission Bluetooth 
+ state Pretraitement : Arranger les 4 octets qui seront transmis \n de façon à pouvoir les reconstituer coter recepteur
+
+ [*] --> Reception 
+ Reception --> Pretraitement
+ Pretraitement --> Transmission
+ Transmission --> Reception : Timeout(0.5s) 
+
+}
+
+@enduml 
