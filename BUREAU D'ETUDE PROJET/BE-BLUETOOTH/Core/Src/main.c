@@ -35,6 +35,7 @@
 #include <string.h>
 #include "data.h"
 #include "lcd.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -44,7 +45,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define MAX_MOISTURE 2500
+#define MAX_LUX 3000
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -63,6 +65,7 @@ uint16_t raw_data[2];
 
 uint16_t prev_mois=0, prev_lux = 0 ;
  static uint32_t last = 0;
+ static uint32_t last_arrosage=0 ;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -81,18 +84,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
   convCompleted = 1 ;
 }
 
-void Display_moisture(uint16_t mois){
-	lcd_position(&hi2c1,0,0) ;
-	char buffer[16];
-	snprintf(buffer, sizeof(buffer), "MOISTURE: %d ", mois);
-	lcd_print(&hi2c1, buffer);
-}
-void Display_lux(uint16_t lux){
-	lcd_position(&hi2c1,0,1) ;
-	char buffer[16];
-	snprintf(buffer, sizeof(buffer), "LUX : %d ", lux);
-	lcd_print(&hi2c1, buffer);
-}
+
 /* USER CODE END 0 */
 
 /**
@@ -181,16 +173,19 @@ int main(void)
        }
 
        // Sortie PWM pour la commande
-       // Sortie sur PA6
+       // Sortie sur PA8
+       // on fix l'interval d'arrossage à 1000 ticks
+        if ( HAL_GetTick()-last_arrosage > 1000 ){
 
-       __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 250);
-
-       /* if (HAL_GetTick() - last > 200) {
-        	Display_lux(lux);
-            Display_moisture(moisture);
-            last = HAL_GetTick();
-        } */
-
+        	if ( moisture >= 0 && moisture < 300 )
+        	    __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 200);
+        	if ( moisture >= 300 && moisture <700)
+        		  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 10);
+        	if( moisture >=700)
+        		  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);
+        	last_arrosage=HAL_GetTick();
+        }
+      // __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 250);
 
 
         set_lux(lux ) ;
@@ -204,13 +199,15 @@ int main(void)
         char buffer[17];
 
         lcd_position(&hi2c1, 0, 0);
-        snprintf(buffer, sizeof(buffer), "MOISTURE:%4d", prev_mois);
+        int aff_mois =(prev_mois*100)/MAX_MOISTURE;
+        int aff_lux=  (prev_lux*100)/MAX_LUX ;
+        snprintf(buffer, sizeof(buffer), "MOISTURE: %d ", aff_mois);
         lcd_print(&hi2c1, buffer);
-
+        lcd_print(&hi2c1, "%");
         lcd_position(&hi2c1, 0, 1);
-        snprintf(buffer, sizeof(buffer), "LUX:%7d", prev_lux);
+        snprintf(buffer, sizeof(buffer), "LUMIERE: %d ",aff_lux);
         lcd_print(&hi2c1, buffer);
-
+        lcd_print(&hi2c1, "%");
         last=HAL_GetTick();
         }
 
