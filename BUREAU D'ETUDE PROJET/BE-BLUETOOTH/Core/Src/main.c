@@ -20,10 +20,13 @@
 #include "main.h"
 #include "adc.h"
 #include "dma.h"
+#include "i2c.h"
 #include "ipcc.h"
 #include "memorymap.h"
 #include "rf.h"
 #include "rtc.h"
+#include "tim.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -31,6 +34,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "data.h"
+#include "lcd.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -54,6 +58,11 @@
 uint16_t lux=0 ;
 uint16_t moisture=0;
 uint16_t raw_data[2];
+
+// Variables pour l'affichage des lcd
+
+uint16_t prev_mois=0, prev_lux = 0 ;
+ static uint32_t last = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -70,6 +79,19 @@ volatile uint8_t convCompleted=0 ;
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
   convCompleted = 1 ;
+}
+
+void Display_moisture(uint16_t mois){
+	lcd_position(&hi2c1,0,0) ;
+	char buffer[16];
+	snprintf(buffer, sizeof(buffer), "MOISTURE: %d ", mois);
+	lcd_print(&hi2c1, buffer);
+}
+void Display_lux(uint16_t lux){
+	lcd_position(&hi2c1,0,1) ;
+	char buffer[16];
+	snprintf(buffer, sizeof(buffer), "LUX : %d ", lux);
+	lcd_print(&hi2c1, buffer);
 }
 /* USER CODE END 0 */
 
@@ -113,9 +135,13 @@ int main(void)
   MX_DMA_Init();
   MX_RTC_Init();
   MX_ADC1_Init();
+  MX_I2C1_Init();
+  MX_USART1_UART_Init();
+  MX_TIM1_Init();
   MX_RF_Init();
   /* USER CODE BEGIN 2 */
-
+   rgb_lcd lcd;
+   lcd_init(&hi2c1,&lcd);
   /* USER CODE END 2 */
 
   /* Init code for STM32_WPAN */
@@ -124,6 +150,9 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   HAL_ADC_Start_DMA(&hadc1, (uint32_t *) raw_data, 2);
+
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+
   while (1)
   {
 
@@ -137,11 +166,53 @@ int main(void)
         moisture = raw_data[0];
         lux      = raw_data[1];
 
+        // On affiche que si il y'a un grand changement
+        // Eviter que le ADC affiche tout le temps
+
+       if ((moisture-prev_mois)>10 || (prev_mois - moisture )>10 )
+            {
+
+        	prev_mois=moisture ;
+            }
+
+       if((lux-prev_lux)>200 || (prev_lux - lux)>200) {
+
+        	 prev_lux=lux ;
+       }
+
+       // Sortie PWM pour la commande
+       // Sortie sur PA6
+
+       __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 250);
+
+       /* if (HAL_GetTick() - last > 200) {
+        	Display_lux(lux);
+            Display_moisture(moisture);
+            last = HAL_GetTick();
+        } */
+
+
 
         set_lux(lux ) ;
         set_mois(moisture) ;
-        //HAL_Delay(100);
+
         convCompleted = 0;
+
+       // Affichage après 1000 ticks
+
+        if (HAL_GetTick() - last > 1000) {
+        char buffer[17];
+
+        lcd_position(&hi2c1, 0, 0);
+        snprintf(buffer, sizeof(buffer), "MOISTURE:%4d", prev_mois);
+        lcd_print(&hi2c1, buffer);
+
+        lcd_position(&hi2c1, 0, 1);
+        snprintf(buffer, sizeof(buffer), "LUX:%7d", prev_lux);
+        lcd_print(&hi2c1, buffer);
+
+        last=HAL_GetTick();
+        }
 
     }
 
