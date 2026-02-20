@@ -14,9 +14,9 @@ state system{
  Transfer --> decision_Arrosage 
  state "<b>decision_Arrosage</b>" as decision_Arrosage {
  [*] --> Comparaison 
- Comparaison --> Arrosage_fort : 0 < Valeur < 50
- Comparaison --> Arrosage_moyen : 50 < Valeur < 1000 
- Comparaison --> stop_arrosage : Valeur > 1000 
+ Comparaison --> Arrosage_fort : 0 <= Valeur < 12%
+ Comparaison --> Arrosage_moyen : 12% <= Valeur < 28%
+ Comparaison --> stop_arrosage : Valeur >= 28%
 
  Arrosage_fort --> [*]
  Arrosage_moyen --> [*]
