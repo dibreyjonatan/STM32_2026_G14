@@ -2,7 +2,7 @@
 
 state "<b>system</b>" as system 
 [*] --> system 
-state system{
+state system #66FF66{
  state Init_periph : Configuration des peripheriques 
  state Mesures : Lectures des données mesurer \n par les capteurs sur le DMA
  state Affichage : Affichage des données capteurs sur le LCD 
@@ -11,8 +11,8 @@ state system{
  [*] --> Init_periph 
  Init_periph --> Mesures  
  Mesures --> Transfer 
- Transfer --> decision_Arrosage 
- state "<b>decision_Arrosage</b>" as decision_Arrosage {
+ Transfer --> decision_Arrosage : non signal de commande 
+ state "<b>decision_Arrosage</b>" as decision_Arrosage #FFFF77{
  [*] --> Comparaison 
  Comparaison --> Arrosage_fort : 0 <= Valeur < 12%
  Comparaison --> Arrosage_moyen : 12% <= Valeur < 28%
@@ -22,20 +22,36 @@ state system{
  Arrosage_moyen --> [*]
  stop_arrosage --> [*] 
  }
- 
+ state "<b>Arrosage forcé</b>\n <I> par commande  BLE </I> " as Arrosage_forcé : Mise en marche de la pompe
+ Transfer --> Arrosage_forcé : signal de commande 
+ Arrosage_forcé -->  Affichage
  decision_Arrosage --> Affichage 
  Affichage --> Mesures 
 
  ||
- state Reception : Reception des données de capteur transmis 
+ state Reception_data : Reception des données \n  de capteur transmis 
  state Transmission : Transmission Bluetooth 
  state Pretraitement : Arranger les 4 octets qui seront transmis \n de façon à pouvoir les reconstituer coter recepteur
 
- [*] --> Reception 
- Reception --> Pretraitement
+ [*] --> Reception_data 
+ Reception_data --> Pretraitement
  Pretraitement --> Transmission
- Transmission --> Reception : Timeout(0.5s) 
+ Transmission --> Reception_data : Timeout(0.5s) 
 
+
+ || 
+/'state Reception_command : incremente la variable \n state à la reception \n de la commande bluetooth
+ state start_command : Demarrage forcé de l'arrosage
+ state Stop_command : Arret du forcage \n  et reprise de l'asservissement \n par le bluetooth 
+'/
+ state Reception_command : incremente la variable \n state à la reception \n de la commande bluetooth
+ state start_command : mise  à 1 du signal  de comand  \n et  transfer du signal  
+ state Stop_command : mise à 0 du signal de \n commande et  transfer du signal 
+ [*] --> Reception_command
+ Reception_command --> start_command : state%2==1 
+ Reception_command --> Stop_command : state%2==0
+ start_command -left-> Reception_command
+ Stop_command -right-> Reception_command 
 }
 
 @enduml 
