@@ -66,6 +66,7 @@ uint16_t raw_data[2];
 uint16_t prev_mois=0, prev_lux = 0 ;
  static uint32_t last = 0;
  static uint32_t last_arrosage=0 ;
+ static uint32_t com=0 ;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -175,17 +176,32 @@ int main(void)
        // Sortie PWM pour la commande
        // Sortie sur PA8
        // on fix l'interval d'arrossage à 1000 ticks
+
+       if (get_command()){
+    	   __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 100);
+       }
+       else{
         if ( HAL_GetTick()-last_arrosage > 1000 ){
 
         	if ( moisture >= 0 && moisture < 300 )
         	    __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 200);
         	if ( moisture >= 300 && moisture <700)
-        		  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 10);
+        		  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 100);
         	if( moisture >=700)
         		  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);
         	last_arrosage=HAL_GetTick();
+
         }
+
+
+       }
+
+
+
       // __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 250);
+
+       // Command depuis le bluetooth
+
 
 
         set_lux(lux ) ;

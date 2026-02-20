@@ -12,11 +12,13 @@ static uint16_t data_lux=0 ;
 
 static uint16_t data_mois=0 ;
 
-
+static uint8_t command=0 ;
 void set_lux(uint16_t x ) ;
 void set_mois(uint16_t y) ;
 
 uint16_t get_lux(void) ;
 uint16_t get_mois(void) ;
 
+void set_command(uint8_t x);
+uint8_t get_command(void);
 #endif /* INC_DATA_H_ */

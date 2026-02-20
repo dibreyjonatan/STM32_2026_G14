@@ -113,7 +113,8 @@ STM32_WPAN/App/custom_stm.o: ../STM32_WPAN/App/custom_stm.c \
  ../Drivers/BSP/P-NUCLEO-WB55.Nucleo/stm32wbxx_nucleo.h \
  ../Drivers/BSP/P-NUCLEO-WB55.Nucleo/stm32wbxx_nucleo_errno.h \
  ../Core/Inc/stm32wbxx_nucleo_conf.h ../Core/Inc/app_conf.h \
- ../Core/Inc/app_entry.h ../Core/Inc/app_common.h
+ ../Core/Inc/app_entry.h ../Core/Inc/app_common.h ../Core/Inc/data.h \
+ ../Core/Inc/main.h
 ../Middlewares/ST/STM32_WPAN/ble/svc/Src/common_blesvc.h:
 ../Middlewares/ST/STM32_WPAN/ble/ble_common.h:
 ../STM32_WPAN/App/ble_conf.h:
@@ -234,3 +235,5 @@ STM32_WPAN/App/custom_stm.o: ../STM32_WPAN/App/custom_stm.c \
 ../Core/Inc/app_conf.h:
 ../Core/Inc/app_entry.h:
 ../Core/Inc/app_common.h:
+../Core/Inc/data.h:
+../Core/Inc/main.h:

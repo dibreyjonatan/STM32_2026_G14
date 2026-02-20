@@ -22,3 +22,11 @@ uint16_t get_lux(void) {
 uint16_t get_mois(void) {
  return data_mois ;
 }
+
+
+void set_command(uint8_t x){
+	command=x ;
+}
+uint8_t get_command(void){
+	return command ;
+}

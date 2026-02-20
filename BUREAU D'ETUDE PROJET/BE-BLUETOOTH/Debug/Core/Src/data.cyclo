@@ -2,3 +2,5 @@
 ../Core/Src/data.c:14:6:set_mois	1
 ../Core/Src/data.c:18:10:get_lux	1
 ../Core/Src/data.c:22:10:get_mois	1
+../Core/Src/data.c:27:6:set_command	1
+../Core/Src/data.c:30:9:get_command	1
