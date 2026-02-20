@@ -13,3 +13,8 @@ Le diagramme ci-dessous est une representation en l'état du fonctionnement glob
 La figure ci-dessus montre le montage finale et on peut y voir le graphique visuel des signaux bluetooth qui y sont décodés.
 
 ![system_image](Rapport/images_BE/set_up_system.jpeg)
+
+#### Visualisation graphique
+Le graph visual des données des capteurs obtenu via bluetooth 
+
+![pyqtgraph_image](Rapport/images_BE/visualisation.png)
