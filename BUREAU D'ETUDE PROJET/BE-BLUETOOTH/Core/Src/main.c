@@ -179,6 +179,14 @@ int main(void)
        // Sortie sur PA8
        // on fix l'interval d'arrossage à 1000 ticks
 
+
+       /**
+        * Arrosage forcé du système, ici le forcage a une priorité supérieure sur l'asservissement
+        * une fois la réception de la commande bluetooth, on demarre le moteur.
+        *
+        * NB: A la reception du signal, get_command renvoie 1 tout le temps ce qui donne un arrossage forcé i.e (if),
+        * et lorsque l'éteint depuis l'application, get_command renvoie 0 et l'asservissement reprend son cours i.e (else).
+        * */
        if (get_command()){
     	   __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 200); //20% de la tension
        }
@@ -203,28 +211,22 @@ int main(void)
 
        }
 
-
-
-      // __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 250);
-
-       // Command depuis le bluetooth
-
-
-
+        // Permet de mettre à jour les valeurs de lux et moisture au niveau de la stack bluetooth
         set_lux(lux ) ;
         set_mois(moisture) ;
-
+        // Indicateur de fin de conversion par le DMA
         convCompleted = 0;
 
        // Affichage après 1000 ticks
-
+       // Parce que les mesures fluctue trop on essaie des les actualiser uniquement après 1000 ticks
+        // 1000 ticks == 1000/(32*1000000) = 31,25us
         if (HAL_GetTick() - last > 1000) {
         char buffer[17];
         char buffer_l[17];
         lcd_position(&hi2c1, 0, 0);
         aff_mois =(prev_mois*100)/MAX_MOISTURE;
         aff_lux=  (prev_lux*100)/MAX_LUX ;
-
+         // Affichage sur lCD une ligne
               snprintf(buffer, sizeof(buffer), "SM: %d", aff_mois);
 
                lcd_print(&hi2c1, buffer);
