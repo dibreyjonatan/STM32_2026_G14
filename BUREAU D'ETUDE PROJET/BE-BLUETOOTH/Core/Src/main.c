@@ -146,6 +146,8 @@ int main(void)
 
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
 
+  uint8_t aff_mois, aff_lux ;
+
   while (1)
   {
 
@@ -213,18 +215,30 @@ int main(void)
 
         if (HAL_GetTick() - last > 1000) {
         char buffer[17];
-
+        char buffer_l[17];
         lcd_position(&hi2c1, 0, 0);
-        int aff_mois =(prev_mois*100)/MAX_MOISTURE;
-        int aff_lux=  (prev_lux*100)/MAX_LUX ;
-        snprintf(buffer, sizeof(buffer), "MOISTURE: %d ", aff_mois);
-        lcd_print(&hi2c1, buffer);
-        lcd_print(&hi2c1, "%");
-        lcd_position(&hi2c1, 0, 1);
-        snprintf(buffer, sizeof(buffer), "LUMIERE: %d ",aff_lux);
-        lcd_print(&hi2c1, buffer);
-        lcd_print(&hi2c1, "%");
+        aff_mois =(prev_mois*100)/MAX_MOISTURE;
+        aff_lux=  (prev_lux*100)/MAX_LUX ;
+
+              snprintf(buffer, sizeof(buffer), "SM: %d", aff_mois);
+
+               lcd_print(&hi2c1, buffer);
+               lcd_print(&hi2c1, "% ");
+               snprintf(buffer, sizeof(buffer), "LUX: %d",aff_lux);
+               lcd_print(&hi2c1, buffer);
+               lcd_print(&hi2c1, "%");
+
         last=HAL_GetTick();
+
+        /* snprintf(buffer, sizeof(buffer), "MOISTURE : %d ", aff_mois);
+               //HAL_UART_Transmit(&huart1,buffer , 27, 10);
+               lcd_print(&hi2c1, buffer);
+               lcd_print(&hi2c1, "%");
+               lcd_position(&hi2c1, 0, 1);
+               snprintf(buffer_l, sizeof(buffer_l), "LUMIERE: %d ",aff_lux);
+               lcd_print(&hi2c1, buffer_l);
+               lcd_print(&hi2c1, "%");*/
+
         }
 
     }
