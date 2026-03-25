@@ -180,15 +180,20 @@ int main(void)
        // on fix l'interval d'arrossage à 1000 ticks
 
        if (get_command()){
-    	   __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 100);
+    	   __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 200); //20% de la tension
        }
        else{
         if ( HAL_GetTick()-last_arrosage > 1000 ){
-
+            //Lorsque le sol est très sec
+        	// On alimente à 40% de la tension
         	if ( moisture >= 0 && moisture < 300 )
-        	    __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 200);
+        	    __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 400); // 40% de la tension
+        	// Lorsque le sol est un peu humide
+        	//On alimente à 20% de la tension
         	if ( moisture >= 300 && moisture <700)
-        		  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 100);
+        		  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 200);
+        	//Lorque le sol est humide
+        	// On cesse d'alimenter le moteur
         	if( moisture >=700)
         		  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);
         	last_arrosage=HAL_GetTick();
